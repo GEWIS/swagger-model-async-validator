@@ -1,17 +1,16 @@
-/**
- * Created by bdunn on 18/09/2014.
- */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
-
-//noinspection JSUnusedGlobalSymbols
-module.exports.validationTests = {
-    validateDate: function(test) {
-        var data = {
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
+describe('validationTests', () => {
+    test('validateDate', async () => {
+        const data = {
             travis: 'test',
             dob: '2014-02-01'
         };
-        var model = {
+        const model = {
             properties: {
                 dob: {
                     type: 'string',
@@ -19,20 +18,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateAsDate: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateAsDate', async () => {
+        const data = {
             travis: 'test',
             dob: new Date('2014-02-01')
         };
-        var model = {
+        const model = {
             properties: {
                 dob: {
                     type: 'string',
@@ -40,20 +34,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateNotADate: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateNotADate', async () => {
+        const data = {
             travis: 'test',
             dob: 'This is NOt a Date'
         };
-        var model = {
+        const model = {
             properties: {
                 dob: {
                     type: 'string',
@@ -61,20 +50,16 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid, JSON.stringify(errors));
-
-        test.done();
-    },
-    validateNumberAsDateFails: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+        expect(JSON.stringify(errors)).not.toBeFalsy();
+    });
+    test('validateNumberAsDateFails', async () => {
+        const data = {
             travis: 'test',
             dob: '3456'
         };
-        var model = {
+        const model = {
             properties: {
                 dob: {
                     type: 'string',
@@ -82,20 +67,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validateDateTimeWhenJustDate: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+    });
+    test('validateDateTimeWhenJustDate', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -103,20 +83,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateFormatOk: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateFormatOk', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -124,20 +99,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateFormatFailed: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateFormatFailed', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-1-1"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -145,20 +115,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validateDateTime: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+    });
+    test('validateDateTime', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01T12:00:00"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -166,22 +131,17 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(3);
-        test.ok(!errors.valid);
-        test.ok(errors.errorCount === 1);
-        test.ok(errors.errors[0].message === 'dateOfBirth (2014-01-01T12:00:00) is not a type of date', errors.errors[0].message);
-
-        test.done();
-    },
-    validateDateTimeGreaterThanMinimum: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+        expect(errors.errorCount).toBe(1);
+        expect(errors.errors[0].message).toBe('dateOfBirth (2014-01-01T12:00:00) is not a type of date');
+    });
+    test('validateDateTimeGreaterThanMinimum', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-02"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -190,20 +150,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateTimeGreaterThanMinimumWhenDate: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateTimeGreaterThanMinimumWhenDate', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": new Date("2014-01-02")
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -212,20 +167,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateTimeEqualToMinimum: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateTimeEqualToMinimum', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -234,20 +184,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateTimeEqualToMinimumWhenDate: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateTimeEqualToMinimumWhenDate', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": new Date("2014-01-01")
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -256,20 +201,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateTimeLessThanMinimum: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateTimeLessThanMinimum', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -278,20 +218,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validateDateTimeLessThanMinimumWhenDate: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+    });
+    test('validateDateTimeLessThanMinimumWhenDate', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": new Date("2014-01-01")
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -300,20 +235,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validateDateTimeGreaterThanMaximum: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+    });
+    test('validateDateTimeGreaterThanMaximum', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-02"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -322,20 +252,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validateDateTimeEqualToMaximum: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+    });
+    test('validateDateTimeEqualToMaximum', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -344,20 +269,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateTimeLessThanMaximim: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateTimeLessThanMaximim', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -366,20 +286,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateTimeGreaterThanExclusiveMinimum: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateTimeGreaterThanExclusiveMinimum', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-02"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -388,20 +303,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateTimeEqualToExclusiveMinimum: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateTimeEqualToExclusiveMinimum', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -410,20 +320,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validateDateTimeLessThanExclusiveMinimum: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+    });
+    test('validateDateTimeLessThanExclusiveMinimum', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -432,20 +337,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validateDateTimeGreaterThanExclusiveMaximum: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+    });
+    test('validateDateTimeGreaterThanExclusiveMaximum', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-02"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -454,20 +354,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validateDateTimeEqualToExclusiveMaximum: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+    });
+    test('validateDateTimeEqualToExclusiveMaximum', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -476,20 +371,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validateDateTimeLessThanExclusiveMaximim: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+    });
+    test('validateDateTimeLessThanExclusiveMaximim', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": "2014-01-01"
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -498,20 +388,15 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateDateTimeLessThanExclusiveMaximim2: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBeTruthy();
+    });
+    test('validateDateTimeLessThanExclusiveMaximim2', async () => {
+        const data = {
             "salutation": "Mr Death",
             "dateOfBirth": new Date(2013, 10, 4)
         };
-        var model = {
+        const model = {
             properties: {
                 dateOfBirth: {
                     type: "string",
@@ -520,15 +405,9 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var json = JSON.stringify(data);
-        var target = JSON.parse(json);
-
-        var errors = validator.validate(target, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    }
-};
+        const json = JSON.stringify(data);
+        const target = JSON.parse(json);
+        const errors = await validator.validate(target, model);
+        expect(errors.valid).toBeTruthy();
+    });
+});

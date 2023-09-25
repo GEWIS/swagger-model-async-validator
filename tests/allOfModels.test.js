@@ -1,13 +1,14 @@
-/**
- * Created by bdunn on 10/11/2014.
- */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
 
-//noinspection JSUnusedGlobalSymbols
-module.exports.refTests = {
-    hasAllOfTest: function(test) {
-        var data = {
+beforeEach(() => {
+    validator = new Validator();
+});
+
+describe('Ref Tests', () => {
+    test('hasAllOfTest', async() => {
+        const data = {
             sample: true,
             top: 1,
             left: 1,
@@ -15,7 +16,7 @@ module.exports.refTests = {
             bottom: 5
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 required: [ "sample" ],
                 allOf: [
@@ -48,14 +49,13 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasAllOfTest2: function(test) {
-        var data = {
+        expect(errors.valid).toBe(true);
+    });
+
+    test('hasAllOfTest2', async () => {
+        const data = {
             sample: true,
             top: 1,
             left: 1,
@@ -63,7 +63,7 @@ module.exports.refTests = {
             bottom: 5
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 allOf: [
                     {
@@ -100,20 +100,19 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasAllOfTestWithMissingRequiredFields: function(test) {
-        var data = {
+        expect(errors.valid).toBe(true);
+    });
+
+    test('hasAllOfTestWithMissingRequiredFields', async() => {
+        const data = {
             left: 1,
             right: 5,
             bottom: 5
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 allOf: [
                     {
@@ -150,14 +149,13 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(1);
-        test.ok(!errors.valid);
-        test.done();
-    },
-    hasAllOfWithRefAlsoHavingAllOfTest: function(test) {
-        var data = {
+        expect(errors.valid).toBe(false);
+    });
+
+    test('hasAllOfWithRefAlsoHavingAllOfTest', async() => {
+        const data = {
             sample: true,
             top: 1,
             left: 1,
@@ -165,7 +163,7 @@ module.exports.refTests = {
             bottom: 5
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 allOf: [
                     {
@@ -217,21 +215,20 @@ module.exports.refTests = {
 
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasAllOfWithRefAlsoHavingAllOfTestWithMissingRequiredFields: function(test) {
-        var data = {
+        expect(errors.valid).toBe(true);
+    });
+
+    test('hasAllOfWithRefAlsoHavingAllOfTestWithMissingRequiredFields', async () => {
+        const data = {
             sample: true,
             left: 1,
             right: 5,
             bottom: 5
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 allOf: [
                     {
@@ -283,20 +280,19 @@ module.exports.refTests = {
 
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(1);
-        test.ok(!errors.valid);
-        test.done();
-    },
-    hasAllOfPropertyTestWithMissingRequiredFields: function(test) {
-        var data = {
+        expect(errors.valid).toBe(false);
+    });
+
+    test('hasAllOfPropertyTestWithMissingRequiredFields', async () => {
+        const data = {
             location: {
                 top: 1,
             }
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 type: "object",
                 required: [ "location" ],
@@ -338,17 +334,16 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(4);
-        test.ok(!errors.valid);
-        test.ok(errors.errorCount === 2, "Errors: " + errors.errors);
-        test.ok(errors.errors[0].message === 'left is a required field');
-        test.ok(errors.errors[1].message === 'sample is a required field');
-        test.done();
-    },
-    hasAllOf: function(test) {
-        var data = {
+        expect(errors.valid).toBe(false);
+        expect(errors.errorCount).toBe(2);
+        expect(errors.errors[0].message).toBe('left is a required field');
+        expect(errors.errors[1].message).toBe('sample is a required field');
+    });
+
+    test('hasAllOf', async () => {
+        const data = {
             sample: true,
             location: {
                 right: 1,
@@ -356,7 +351,7 @@ module.exports.refTests = {
             }
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 allOf: [{
                     properties: {
@@ -382,14 +377,13 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasAllOfError: function(test) {
-        var data = {
+        expect(errors.valid).toBe(true);
+    });
+
+    test('hasAllOfError', async () => {
+        const data = {
             sample: true,
             location: {
                 right: "Not an integer",
@@ -397,7 +391,7 @@ module.exports.refTests = {
             }
         };
 
-        var model = {
+        const model = {
             "type": "object",
             allOf: [{
                 properties: {
@@ -422,15 +416,14 @@ module.exports.refTests = {
             }]
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errorCount === 1, "Errors: " + errors.errors);
-        test.done();
-    },
-    hasAllOfWithRef: function(test) {
-        var data = {
+        expect(errors.valid).toBe(false);
+        expect(errors.errorCount).toBe(1);
+    });
+
+    test('hasAllOfWithRef', async () => {
+        const data = {
             sample: true,
             location: {
                 right: 1,
@@ -438,7 +431,7 @@ module.exports.refTests = {
             }
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 allOf: [{
                     properties: {
@@ -470,21 +463,20 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errorCount === 2, "Errors: " + errors.errors);
-        test.done();
-    },
-    hasNestedAllOfWithRef: function(test) {
-        var data = {
+        expect(errors.valid).toBe(false);
+        expect(errors.errorCount).toBe(2);
+    });
+
+    test('hasNestedAllOfWithRef', async () => {
+        const data = {
             sample: true,
             top: "Not an integer",
             left: 1
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 type: "object",
                 allOf: [{
@@ -514,11 +506,9 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errorCount === 1, "Errors: " + errors.errors);
-        test.done();
-    }
-};
+        expect(errors.valid).toBe(false);
+        expect(errors.errorCount).toBe(1);
+    });
+});

@@ -23,7 +23,8 @@
     "lib"
   ],
   "scripts": {
-    "test": "nodeunit tests"
+    "test": "nodeunit tests",
+    "test:jest": "jest"
   },
   "devDependencies": {
     "all-contributors-cli": "^6.20.0",
@@ -167,6 +168,7 @@
     }
   ],
   "dependencies": {
+    "jest": "^29.7.0",
     "lodash.isequal": "^4.5.0"
   }
 }

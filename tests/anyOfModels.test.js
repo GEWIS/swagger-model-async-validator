@@ -1,14 +1,18 @@
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
 
-//noinspection JSUnusedGlobalSymbols
-module.exports.refTests = {
-    validAnyOfValueTest: function(test) {
-        var data = {
+beforeEach(() => {
+    validator = new Validator();
+});
+
+describe('Ref Tests', () => {
+    test('validAnyOfValueTest', async () => {
+        const data = {
             type: "Type 3"
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 type: "object",
                 required: [ "type" ],
@@ -29,18 +33,16 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    invalidAnyOfValueTest: function(test) {
-        var data = {
+    test('invalidAnyOfValueTest', async () => {
+        const data = {
             type: "Type 4"
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 type: "object",
                 required: [ "type" ],
@@ -61,21 +63,20 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(4);
-        test.ok(!errors.valid);
-        test.ok(errors.errorCount === 2);
-        test.ok(errors.errors[0].message === "type is not a valid target for anyOf");
-        test.ok(errors.errors[1].message === "type is not a valid target for anyOf");
-        test.done();
-    },
-    AnyOfDiscriminatorTest: function(test) {
-        var data = {
+        expect(errors.valid).toBe(false);
+        expect(errors.errorCount).toBe(2);
+        expect(errors.errors[0].message).toBe("type is not a valid target for anyOf");
+        expect(errors.errors[1].message).toBe("type is not a valid target for anyOf");
+    });
+
+    test('AnyOfDiscriminatorTest', async () => {
+        const data = {
             pet_type: "Cat"
         };
 
-        var models = {
+        const models = {
             dataModel: {
                 type: "array",
                 items: {
@@ -137,16 +138,15 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate([data], models["dataModel"], models);
+        const errors = await validator.validate([data], models["dataModel"], models);
 
-        test.expect(3);
-        test.ok(!errors.valid);
-        test.ok(errors.errorCount === 1, "Errors: " + errors.errors);
-        test.ok(errors.errors[0].message === 'age is a required field');
-        test.done();
-    },
-    AnyOfDiscriminatorMappingTest: function(test) {
-        var data = [
+        expect(errors.valid).toBe(false);
+        expect(errors.errorCount).toBe(1);
+        expect(errors.errors[0].message).toBe('age is a required field');
+    });
+
+    test('AnyOfDiscriminatorMappingTest', async() => {
+        const data = [
             { pet_type: "Cat" },
             { pet_type: "Kitten" },
             { pet_type: "Dog" },
@@ -154,7 +154,7 @@ module.exports.refTests = {
             { pet_type: "Hamster" }
         ];
 
-        var models = {
+        const models = {
             dataModel: {
                 type: "array",
                 items: {
@@ -222,12 +222,10 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        const errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(3);
-        test.ok(!errors.valid);
-        test.ok(errors.errorCount === 5, "Errors: " + errors.errors);
-        test.ok(errors.errors[4].message === 'Item 4 in Array (rootModel) contains an object that is not one of the possible types');
-        test.done();
-    }
-};
+        expect(errors.valid).toBe(false);
+        expect(errors.errorCount).toBe(5);
+        expect(errors.errors[4].message).toBe('Item 4 in Array (rootModel) contains an object that is not one of the possible types');
+    });
+});

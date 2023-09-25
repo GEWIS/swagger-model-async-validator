@@ -1,16 +1,17 @@
-/**
- * Created by bdunn on 18/09/2014.
- */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
 
-//noinspection JSUnusedGlobalSymbols
-module.exports.validationTests = {
-    arrayTypeIgnored: function(test) {
-        var data = {
-            sample: [ "test", "face", "tribble" ]
+beforeEach(() => {
+    validator = new Validator();
+});
+
+describe('Validation Tests', () => {
+    test('arrayTypeIgnored', async () => {
+        const data = {
+            sample: ["test", "face", "tribble"]
         };
-        var model = {
+        const model = {
             required: [],
             properties: {
                 sample: {
@@ -22,18 +23,16 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(1);
-        test.ok(errors.valid);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.done();
-    },
-    arrayNotDefined: function(test) {
-        var data = {
-            sample: [ "test", "face", "tribble" ]
+    test('arrayNotDefined', async () => {
+        const data = {
+            sample: ["test", "face", "tribble"]
         };
-        var model = {
+        const model = {
             required: [],
             properties: {
                 name: {
@@ -42,19 +41,17 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(1);
-        test.ok(errors.valid);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.done();
-    },
-    arrayNullWhenNullable: function(test) {
-        var data = {
+    test('arrayNullWhenNullable', async () => {
+        const data = {
             sample: null
         };
-        var model = {
-            required: [ 'sample' ],
+        const model = {
+            required: ['sample'],
             properties: {
                 sample: {
                     type: 'array',
@@ -66,19 +63,17 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(1);
-        test.ok(errors.valid);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.done();
-    },
-    arrayNullWhenNullable2: function(test) {
-        var data = {
+    test('arrayNullWhenNullable2', async () => {
+        const data = {
             sample: null
         };
-        var model = {
-            required: [ 'sample' ],
+        const model = {
+            required: ['sample'],
             properties: {
                 sample: {
                     type: 'array',
@@ -90,19 +85,17 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(1);
-        test.ok(errors.valid);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.done();
-    },
-    arrayNullWhenNotNullable: function(test) {
-        var data = {
+    test('arrayNullWhenNotNullable', async () => {
+        const data = {
             sample: null
         };
-        var model = {
-            required: [ 'sample' ],
+        const model = {
+            required: ['sample'],
             properties: {
                 sample: {
                     type: 'array',
@@ -113,21 +106,19 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(2);
-        test.ok(!errors.valid);
-        //test.ok(errors.errors.length === 1, errors.errors.length);
-        test.ok(errors.errors[0].message === 'sample is a required field', errors.errors[0].message);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors.length).toBe(1);
+        expect(errors.errors[0].message).toBe('sample is a required field');
+    });
 
-        test.done();
-    },
-    arrayTypeRequired: function(test) {
-        var data = {
-            sample: [ "test", "face", "tribble" ]
+    test('arrayTypeRequired', async () => {
+        const data = {
+            sample: ["test", "face", "tribble"]
         };
-        var model = {
-            required: [ 'sample' ],
+        const model = {
+            required: ['sample'],
             properties: {
                 sample: {
                     type: 'array',
@@ -138,19 +129,17 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(1);
-        test.ok(errors.valid);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.done();
-    },
-    missingArrayTypeRequired: function(test) {
-        var data = {
-            name: [ "test", "face", "tribble" ]
+    test('missingArrayTypeRequired', async () => {
+        const data = {
+            name: ["test", "face", "tribble"]
         };
-        var model = {
-            required: [ 'sample' ],
+        const model = {
+            required: ['sample'],
             properties: {
                 sample: {
                     type: 'array',
@@ -161,19 +150,18 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'sample is a required field');
+        expect(errors.valid).toBe(false);
+        expect(errors.errors.length).toBe(1);
+        expect(errors.errors[0].message).toBe('sample is a required field');
+    });
 
-        test.done();
-    },
-    emptyArrayValidates: function(test) {
-        var data = {
-            sample: [ ]
+    test('emptyArrayValidates', async () => {
+        const data = {
+            sample: []
         };
-        var model = {
+        const model = {
             required: [],
             properties: {
                 sample: {
@@ -185,19 +173,17 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(1);
-        test.ok(errors.valid);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.done();
-    },
-    arrayValidationFails: function(test) {
-        var data = {
-            sample: [ 1, "2", "tribble" ]
+    test('arrayValidationFails', async() => {
+        const data = {
+            sample: [1, "2", "tribble"]
         };
-        var model = {
-            required: [ 'sample' ],
+        const model = {
+            required: ['sample'],
             properties: {
                 sample: {
                     type: 'array',
@@ -208,20 +194,18 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(1);
-        test.ok(!errors.valid);
+        expect(errors.valid).toBe(false);
+    });
 
-        test.done();
-    },
-    arrayRefValidationFails: function(test) {
-        var data = {
-            sample: [ { id: 1, name: 'test'}, "2", "tribble" ]
+    test('arrayRefValidationFails', async () => {
+        const data = {
+            sample: [{ id: 1, name: 'test' }, "2", "tribble"]
         };
-        var models = {
+        const models = {
             model: {
-                required: [ 'sample' ],
+                required: ['sample'],
                 properties: {
                     sample: {
                         type: 'array',
@@ -232,7 +216,7 @@ module.exports.validationTests = {
                 }
             },
             refModel: {
-                required: [ 'id' ],
+                required: ['id'],
                 properties: {
                     id: {
                         type: "integer"
@@ -244,19 +228,17 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, models["model"], models);
+        const errors = await validator.validate(data, models["model"], models);
 
-        test.expect(1);
-        test.ok(!errors.valid);
+        expect(errors.valid).toBe(false);
+    });
 
-        test.done();
-    },
-    arrayTypeIsNotArrayRequired: function(test) {
-        var data = {
+    test('arrayTypeIsNotArrayRequired', async () => {
+        const data = {
             sample: "Test;Hello;Factor"
         };
-        var model = {
-            required: [ 'sample' ],
+        const model = {
+            required: ['sample'],
             properties: {
                 sample: {
                     type: 'array',
@@ -267,20 +249,19 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === "sample is not an array. An array is expected.", errors.errors[0].message);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors.length).toBe(1);
+        expect(errors.errors[0].message).toBe("sample is not an array. An array is expected.");
+    });
 
-        test.done();
-    },
-    arrayTypeIsNull: function(test) {
-        var data = {
+    test('arrayTypeIsNull', async () => {
+        const data = {
             sample: null
         };
-        var model = {
-            required: [ 'sample' ],
+        const model = {
+            required: ['sample'],
             properties: {
                 sample: {
                     type: 'array',
@@ -291,16 +272,15 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'sample is a required field', errors.errors[0].message);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors.length).toBe(1);
+        expect(errors.errors[0].message).toBe('sample is a required field');
+    });
 
-        test.done();
-    },
-    arrayTypeIsOnOf: function(test) {
-        data = {
+    test('arrayTypeIsOnOf', async () => {
+        const data = {
             lines: [
                 {
                     productId: 'myProductId'
@@ -310,7 +290,7 @@ module.exports.validationTests = {
                 }
             ]
         };
-        models = {
+        const models = {
             datamodel: {
                 "type": "object",
                 "properties": {
@@ -346,16 +326,14 @@ module.exports.validationTests = {
                     }
                 }
             }
-        }
+        };
 
-        var errors = validator.validate(data, models.datamodel, models);
+        const errors = await validator.validate(data, models.datamodel, models);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    arrayTypeIsOnOfFails: function(test) {
-        data = {
+    test('arrayTypeIsOnOfFails', async() => {
+        const data = {
             lines: [
                 {
                     productid: 'myProductId'
@@ -365,7 +343,7 @@ module.exports.validationTests = {
                 }
             ]
         };
-        models = {
+        const models = {
             datamodel: {
                 "type": "object",
                 "properties": {
@@ -387,7 +365,7 @@ module.exports.validationTests = {
             },
             "line-name": {
                 "type": "object",
-                "required": [ "name" ],
+                "required": ["name"],
                 "properties": {
                     "name": {
                         "type": "string"
@@ -396,28 +374,27 @@ module.exports.validationTests = {
             },
             "line-productId": {
                 "type": "object",
-                "required": [ "productId" ],
+                "required": ["productId"],
                 "properties": {
                     "productId": {
                         "type": "string"
                     }
                 }
             }
-        }
-
-        var errors = validator.validate(data, models.datamodel, models);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.equals(errors.errors[0].message, "Item 0 in Array (lines) contains an object that is not one of the possible types");
-        test.done();
-    },
-    arrayUniqueItemNoRef: function(test) {
-        var data = {
-            sample: [ "test", "test", "tribble" ]
         };
-        var model = {
-            required: [ 'sample' ],
+
+        const errors = await validator.validate(data, models.datamodel, models);
+
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe("Item 0 in Array (lines) contains an object that is not one of the possible types");
+    });
+
+    test('arrayUniqueItemNoRef', async () => {
+        const data = {
+            sample: ["test", "test", "tribble"]
+        };
+        const model = {
+            required: ['sample'],
             properties: {
                 sample: {
                     type: 'array',
@@ -429,22 +406,21 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
 
-        test.expect(3);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0] instanceof Error)
-        test.ok(errors.errors[0].message === 'Item test is duplicated in sample');
+        expect(errors.valid).toBe(false);
+        expect(errors.errors.length).toBe(1);
+        expect(errors.errors[0] instanceof Error).toBe(true);
+        expect(errors.errors[0].message).toBe('Item test is duplicated in sample');
+    });
 
-        test.done();
-    },
-    arrayUniqueItemWithRef: function(test) {
-        var data = {
-            sample: [ { id: 1, name: 'test'}, { id: 1, name: 'test'} ]
+    test('arrayUniqueItemWithRef', async() => {
+        const data = {
+            sample: [{ id: 1, name: 'test' }, { id: 1, name: 'test' }]
         };
-        var models = {
+        const models = {
             model: {
-                required: [ 'sample' ],
+                required: ['sample'],
                 properties: {
                     sample: {
                         type: 'array',
@@ -456,7 +432,7 @@ module.exports.validationTests = {
                 }
             },
             refModel: {
-                required: [ 'id' ],
+                required: ['id'],
                 properties: {
                     id: {
                         type: "integer"
@@ -468,12 +444,11 @@ module.exports.validationTests = {
             }
         };
 
-        var errors = validator.validate(data, models["model"], models);
+        const errors = await validator.validate(data, models["model"], models);
 
-        test.expect(3);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0] instanceof Error);
-        test.ok(errors.errors[0].message === 'Item sample contains duplicated fields');
-        test.done();
-    },
-};
+        expect(errors.valid).toBe(false);
+        expect(errors.errors.length).toBe(1);
+        expect(errors.errors[0] instanceof Error).toBe(true);
+        expect(errors.errors[0].message).toBe('Item sample contains duplicated fields');
+    });
+});

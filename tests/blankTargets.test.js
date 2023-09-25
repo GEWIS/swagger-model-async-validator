@@ -1,15 +1,17 @@
-/**
- * Created by bdunn on 19/03/2015.
- */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
 
-//noinspection JSUnusedGlobalSymbols
-module.exports.validatorTests = {
-    disallowBlankTargets: function (test) {
-        var data = {};
+beforeEach(() => {
+    validator = new Validator();
+});
 
-        var model = {
+describe('validatorTests', () => {
+
+    test('disallowBlankTargets', async () => {
+        const data = {};
+
+        const model = {
             required: [ 'id' ],
             properties: {
                 id: {
@@ -19,18 +21,15 @@ module.exports.validatorTests = {
             }
         };
 
-        var errors = validator.validate(data, model);
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe("Unable to validate an empty value for property: rootModel");
+    });
 
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === "Unable to validate an empty value for property: rootModel", errors.errors[0].message);
+    test('allowBlankTargets', async () => {
+        const data = {};
 
-        test.done();
-    },
-    allowBlankTargets: function (test) {
-        var data = {};
-
-        var model = {
+        const model = {
             properties: {
                 id: {
                     type: 'number',
@@ -39,19 +38,16 @@ module.exports.validatorTests = {
             }
         };
 
-        var errors = validator.validate(data, model, null, true);
+        const errors = await validator.validate(data, model, null, true);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    disallowNestedBlankTargets: function (test) {
-        var person = {
+    test('disallowNestedBlankTargets', async () => {
+        const person = {
             id: 1,
             names: {}
         };
-        var model = {
+        const model = {
             required: ['id'],
             properties: {
                 id: {
@@ -74,20 +70,17 @@ module.exports.validatorTests = {
             }
         };
 
-        var errors = validator.validate(person, model);
+        const errors = await validator.validate(person, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe("Unable to validate an empty value for property: names");
+    });
 
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === "Unable to validate an empty value for property: names", errors.errors[0].message);
-
-        test.done();
-    },
-    allowNestedBlankTargets: function (test) {
-        var person = {
+    test('allowNestedBlankTargets', async () => {
+        const person = {
             id: 1,
             names: {}
         };
-        var model = {
+        const model = {
             required: ['id'],
             properties: {
                 id: {
@@ -110,20 +103,17 @@ module.exports.validatorTests = {
             }
         };
 
-        var errors = validator.validate(person, model, null, true);
+        const errors = await validator.validate(person, model, null, true);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    allowReferencedBlankTargets: function (test) {
-        var person = {
+    test('allowReferencedBlankTargets', async () => {
+        const person = {
             id: 1,
             names: {}
         };
 
-        var namesModel = {
+        const namesModel = {
             type: 'object',
             properties: {
                 firstName: {
@@ -137,7 +127,7 @@ module.exports.validatorTests = {
             }
         };
 
-        var personModel = {
+        const personModel = {
             required: ['id'],
             properties: {
                 id: {
@@ -145,32 +135,29 @@ module.exports.validatorTests = {
                     description: 'The object id'
                 },
                 names: {
-                  "$ref": "#/definitions/names"
+                    "$ref": "#/definitions/names"
                 }
             }
         };
 
-        var models = {
-          definitions: {
-              names: namesModel,
-              person: personModel
-          }
+        const models = {
+            definitions: {
+                names: namesModel,
+                person: personModel
+            }
         };
 
-        var errors = validator.validate(person, models.definitions.person, models.definitions, true);
+        const errors = await validator.validate(person, models.definitions.person, models.definitions, true);
+        expect(errors.valid).toBe(true);
+    });
 
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    disallowReferencedBlankTargets: function (test) {
-        var person = {
+    test('disallowReferencedBlankTargets', async () => {
+        const person = {
             id: 1,
             names: {}
         };
 
-        var namesModel = {
+        const namesModel = {
             type: 'object',
             properties: {
                 firstName: {
@@ -184,7 +171,7 @@ module.exports.validatorTests = {
             }
         };
 
-        var personModel = {
+        const personModel = {
             required: ['id'],
             properties: {
                 id: {
@@ -192,24 +179,21 @@ module.exports.validatorTests = {
                     description: 'The object id'
                 },
                 names: {
-                  "$ref": "#/definitions/names"
+                    "$ref": "#/definitions/names"
                 }
             }
         };
 
-        var models = {
-          definitions: {
-              names: namesModel,
-              person: personModel
-          }
+        const models = {
+            definitions: {
+                names: namesModel,
+                person: personModel
+            }
         };
 
-        var errors = validator.validate(person, models.definitions.person, models.definitions, false);
+        const errors = await validator.validate(person, models.definitions.person, models.definitions, false);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe("Unable to validate an empty value for property: names");
+    });
 
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === "Unable to validate an empty value for property: names", errors.errors[0].message);
-
-        test.done();
-    }
-};
+});

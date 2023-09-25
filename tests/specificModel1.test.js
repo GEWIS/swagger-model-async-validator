@@ -1,8 +1,11 @@
-var Validator = require('../lib/modelValidator');
-
-//noinspection JSUnusedGlobalSymbols
-module.exports.userIssue2 = {
-    testSampleOk: function(test) {
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
+describe('userIssue2', () => {
+    test('testSampleOk', async () => {
         var model = {
             id: "TestModel",
             type: "object",
@@ -34,7 +37,6 @@ module.exports.userIssue2 = {
                 }
             }
         };
-
         var data = {
             foo: {
                 event: "test",
@@ -43,23 +45,15 @@ module.exports.userIssue2 = {
                 }
             }
         };
-
         var swagger = {
             definitions: {
                 TestModel: model
             }
         };
-
-        //noinspection JSUnusedLocalSymbols
-        var testValidator = new Validator(swagger);
-
-        var result = swagger.validateModel("TestModel", data);
-
-        test.expect(1);
-        test.ok(result.valid);
-        test.done();
-    },
-    testNoIdWithErrorGetsModelNameRight: function(test) {
+        var result = await validator.validate(data, model, swagger.definitions);
+        expect(result.valid).toBe(true);
+    });
+    test('testNoIdWithErrorGetsModelNameRight', async () => {
         var model = {
             type: "object",
             required: [ "foo" ],
@@ -90,7 +84,6 @@ module.exports.userIssue2 = {
                 }
             }
         };
-
         var data = {
             foo: {
                 event: "test",
@@ -99,24 +92,18 @@ module.exports.userIssue2 = {
                 }
             }
         };
-
         var swagger = {
             definitions: {
                 TestModel: model
             }
         };
-
-        //noinspection JSUnusedLocalSymbols
         var testValidator = new Validator(swagger);
 
-        var result = swagger.validateModel("TestModel", data);
-
-        test.expect(2);
-        test.ok(!result.valid);
-        test.ok(result.modelName === "TestModel");
-        test.done();
-    },
-    testNoIdOk: function(test) {
+        var result = await swagger.validateModel("TestModel", data);
+        expect(result.valid).toBe(false);
+        expect(result.modelName).toBe("TestModel");
+    });
+    test('testNoIdOk', async () => {
         var model = {
             id: "TestModel2",
             type: "object",
@@ -148,7 +135,6 @@ module.exports.userIssue2 = {
                 }
             }
         };
-
         var data = {
             foo: {
                 event: "test",
@@ -157,21 +143,13 @@ module.exports.userIssue2 = {
                 }
             }
         };
-
         var swagger = {
             definitions: {
                 TestModel: model
             }
         };
-
-        //noinspection JSUnusedLocalSymbols
-        var testValidator = new Validator(swagger);
-
-        var result = swagger.validateModel("TestModel", data);
-
-        test.expect(2);
-        test.ok(!result.valid);
-        test.ok(result.modelName === "TestModel2");
-        test.done();
-    }
-};
+        var result = await validator.validate(data, model, swagger.definitions);
+        expect(result.valid).toBe(false);
+        expect(result.modelName).toBe("TestModel2");
+    });
+});

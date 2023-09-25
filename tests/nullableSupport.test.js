@@ -1,18 +1,20 @@
 /**
  * Created by bdunn on 26/10/2016.
  */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
-
-//noinspection JSUnusedGlobalSymbols
-module.exports.validatorTests = {
-    allowXNullableRequiredPropertiesToBeNull: function(test) {
-        var data = {
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
+describe('validationTests', () => {
+    test('allowXNullableRequiredPropertiesToBeNull', async () => {
+        const data = {
             id: 1,
             count: null
         };
-        var model = {
-            required: [ 'id', 'count' ],
+        const model = {
+            required: ['id', 'count'],
             properties: {
                 id: {
                     type: 'number',
@@ -25,21 +27,16 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    allowXNullableFalseRequiredProperties: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('allowXNullableFalseRequiredProperties', async () => {
+        const data = {
             id: 1,
             count: null
         };
-        var model = {
-            required: [ 'id', 'count' ],
+        const model = {
+            required: ['id', 'count'],
             properties: {
                 id: {
                     type: 'number',
@@ -52,21 +49,16 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    allowNullableRequiredPropertiesToBeNull: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('allowNullableRequiredPropertiesToBeNull', async () => {
+        const data = {
             id: 1,
             count: null
         };
-        var model = {
-            required: [ 'id', 'count' ],
+        const model = {
+            required: ['id', 'count'],
             properties: {
                 id: {
                     type: 'number',
@@ -79,21 +71,16 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    allowNullableFalseRequiredProperties: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('allowNullableFalseRequiredProperties', async () => {
+        const data = {
             id: 1,
             count: null
         };
-        var model = {
-            required: [ 'id', 'count' ],
+        const model = {
+            required: ['id', 'count'],
             properties: {
                 id: {
                     type: 'number',
@@ -106,20 +93,15 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    doNotAllowXNullableRequiredPropertiesToBeMissing: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('doNotAllowXNullableRequiredPropertiesToBeMissing', async () => {
+        const data = {
             id: 1
         };
-        var model = {
-            required: [ 'id', 'count' ],
+        const model = {
+            required: ['id', 'count'],
             properties: {
                 id: {
                     type: 'number',
@@ -132,21 +114,16 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    doNotAllowXNullableRequiredPropertiesToBeBlank: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('doNotAllowXNullableRequiredPropertiesToBeBlank', async () => {
+        const data = {
             id: 1,
             count: ''
         };
-        var model = {
-            required: [ 'id', 'count' ],
+        const model = {
+            required: ['id', 'count'],
             properties: {
                 id: {
                     type: 'number',
@@ -159,21 +136,16 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    doNotAllowNullableRequiredPropertiesToBeNull: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('doNotAllowNullableRequiredPropertiesToBeNull', async () => {
+        const data = {
             id: 1,
             count: null
         };
-        var model = {
-            required: [ 'id', 'count' ],
+        const model = {
+            required: ['id', 'count'],
             properties: {
                 id: {
                     type: 'number',
@@ -186,21 +158,16 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    doNotAllowNullableRequiredPropertiesToBeNull2: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('doNotAllowNullableRequiredPropertiesToBeNull2', async () => {
+        const data = {
             id: 1,
             count: null
         };
-        var model = {
-            required: [ 'id', 'count' ],
+        const model = {
+            required: ['id', 'count'],
             properties: {
                 id: {
                     type: 'number',
@@ -212,21 +179,15 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    Issue81DefinitionTest: function(test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('Issue81DefinitionTest', async () => {
+        const data = {
             name: 'zzz',
             some: null
         };
-
-        var model = {
+        const model = {
             "type": "object",
             "required": [
                 "name"
@@ -237,23 +198,18 @@ module.exports.validatorTests = {
                 },
                 "some": {
                     "$ref": "#/definitions/Something",
-                    "nullable" : true
+                    "nullable": true
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    Issue106DefinitionTest: function(test) {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('Issue106DefinitionTest', async () => {
         const data = {
             name: "zzz",
             some: null
         };
-
         const swagger = {
             definitions: {
                 Something: {
@@ -275,20 +231,15 @@ module.exports.validatorTests = {
                 },
             },
         };
-
         const Validator = require("../lib/modelValidator.js");
         const validator = new Validator(swagger);
-        var result = swagger.validateModel("Data", data);
-
-        test.expect(1);
-        test.ok(result.valid);
-        test.done();
-    },
-    Issue106Definition2Test: function(test) {
+        const result = await swagger.validateModel("Data", data);
+        expect(result.valid).toBe(true);
+    });
+    test('Issue106Definition2Test', async () => {
         const data = {
             name: "zzz",
         };
-
         const swagger = {
             definitions: {
                 Something: {
@@ -310,13 +261,9 @@ module.exports.validatorTests = {
                 },
             },
         };
-
         const Validator = require("../lib/modelValidator.js");
         const validator = new Validator(swagger);
-        var result = swagger.validateModel("Data", data);
-
-        test.expect(1);
-        test.ok(result.valid);
-        test.done();
-    }
-};
+        const result = await swagger.validateModel("Data", data);
+        expect(result.valid).toBe(true);
+    });
+});

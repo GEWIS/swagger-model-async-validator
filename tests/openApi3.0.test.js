@@ -1,13 +1,12 @@
-/**
- * Created by bdunn on 17/11/2014.
- */
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
 
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
-
-//noinspection JSUnusedGlobalSymbols
-module.exports.validatorTests = {
-    hasRefWithDefinitionPrefixTest: function(test) {
+describe('validationTests', () => {
+    test('hasRefWithDefinitionPrefixTest', async () => {
         var data = {
             sample: true,
             location: {
@@ -49,10 +48,8 @@ module.exports.validatorTests = {
             }
         };
 
-        var errors = validator.validate(data, models["dataModel"], models);
+        var errors = await validator.validate(data, models["dataModel"], models);
 
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    }
-};
+        expect(errors.valid).toBe(true);
+    });
+});

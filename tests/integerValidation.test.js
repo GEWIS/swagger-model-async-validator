@@ -1,12 +1,11 @@
-/**
- * Created by bdunn on 18/09/2014.
- */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
-
-//noinspection JSUnusedGlobalSymbols
-module.exports.validationTests = {
-    invalidIntegerTypeTest: function(test) {
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
+describe('validationTests', () => {
+    test('invalidIntegerTypeTest', async () => {
         var data = {
             id: 'sample'
         };
@@ -19,16 +18,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'id (sample) is not a type of integer', 'message: ' + errors.errors[0].message);
-
-        test.done();
-    },
-    integerAsStringTypeTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('id (sample) is not a type of integer');
+    });
+    test('integerAsStringTypeTest', async () => {
         var data = {
             id: '123'
         };
@@ -41,16 +35,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'id (123) is not a type of integer', 'message: ' + errors.errors[0].message);
-
-        test.done();
-    },
-    invalidIntegerBlankTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('id (123) is not a type of integer');
+    });
+    test('invalidIntegerBlankTest', async () => {
         var data = {
             id: ""
         };
@@ -63,16 +52,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'id ({empty string}) is not a type of integer', errors.errors[0].message);
-
-        test.done();
-    },
-    invalidIntegerBlankWhenRequiredTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('id ({empty string}) is not a type of integer');
+    });
+    test('invalidIntegerBlankWhenRequiredTest', async () => {
         var data = {
             id: ""
         };
@@ -85,16 +69,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'id is a required field');
-
-        test.done();
-    },
-    validIntegerTypeTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('id is a required field');
+    });
+    test('validIntegerTypeTest', async () => {
         var data = {
             id: 1
         };
@@ -107,28 +86,18 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validPrimitiveIntegerTypeTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validPrimitiveIntegerTypeTest', async () => {
         var data = 1;
         var model = {
             type: 'integer',
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validInteger32TypeTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validInteger32TypeTest', async () => {
         var data = {
             id: 1
         };
@@ -142,15 +111,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validInteger32TypeFailedTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validInteger32TypeFailedTest', async () => {
         var data = {
             id: 3000000000
         };
@@ -164,15 +128,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validInteger64TypeTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('validInteger64TypeTest', async () => {
         var data = {
             id: 3000000000
         };
@@ -186,25 +145,16 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    testdecimalcalcFails: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('testdecimalcalcFails', async () => {
         var v1 = 3.41111111;
         var v2 = 1.22222222;
-
         var result = v1 + v2;
-
-        test.expect(1);
-        test.ok(result !== 4.63333333, result);
-        test.done();
-    },
-    invalidIntegerDecimalValueTest: function(test) {
+        expect(result).not.toBe(4.63333333);
+    });
+    test('invalidIntegerDecimalValueTest', async () => {
         var data = {
             id: 100.52
         };
@@ -217,16 +167,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'id (100.52) is not a type of integer', 'message: ' + errors.errors[0].message);
-
-        test.done();
-    },
-    invalidInteger32DecimalValueTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('id (100.52) is not a type of integer');
+    });
+    test('invalidInteger32DecimalValueTest', async () => {
         var data = {
             id: 100.52
         };
@@ -240,16 +185,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'id (100.52) is not a type of int32', 'message: ' + errors.errors[0].message);
-
-        test.done();
-    },
-    invalidInteger64DecimalValueTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('id (100.52) is not a type of int32');
+    });
+    test('invalidInteger64DecimalValueTest', async () => {
         var data = {
             id: 100.52
         };
@@ -263,16 +203,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'id (100.52) is not a type of int64', 'message: ' + errors.errors[0].message);
-
-        test.done();
-    },
-    validIntegerDecimalValueTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('id (100.52) is not a type of int64');
+    });
+    test('validIntegerDecimalValueTest', async () => {
         var data = {
             id: 100.00
         };
@@ -285,15 +220,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validInteger32DecimalValueTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validInteger32DecimalValueTest', async () => {
         var data = {
             id: 100.00
         };
@@ -307,15 +237,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validInteger32DecimalValueTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validInteger32DecimalValueTest', async () => {
         var data = {
             id: 100.00
         };
@@ -329,15 +254,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validIntegerMinimumExceededTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validIntegerMinimumExceededTest', async () => {
         var data = {
             id: 300
         };
@@ -352,15 +272,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validIntegerMinimumTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('validIntegerMinimumTest', async () => {
         var data = {
             id: 300
         };
@@ -375,15 +290,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validIntegerMinimumIsZeroTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validIntegerMinimumIsZeroTest', async () => {
         var data = {
             id: 1
         };
@@ -398,15 +308,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    invalidIntegerMinimumIsZeroTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('invalidIntegerMinimumIsZeroTest', async () => {
         var data = {
             id: -1
         };
@@ -421,15 +326,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validIntegerMaxiumumExceededTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('validIntegerMaxiumumExceededTest', async () => {
         var data = {
             id: 300
         };
@@ -444,15 +344,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validIntegerMaxiumumTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('validIntegerMaxiumumTest', async () => {
         var data = {
             id: 300
         };
@@ -467,15 +362,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    invalidIntegerMaxiumumIsZeroTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('invalidIntegerMaxiumumIsZeroTest', async () => {
         var data = {
             id: 300
         };
@@ -490,15 +380,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validIntegerMaxiumumIsZeroTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('validIntegerMaxiumumIsZeroTest', async () => {
         var data = {
             id: -5
         };
@@ -513,15 +398,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validIntegerMinimumExclusiveExceededTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validIntegerMinimumExclusiveExceededTest', async () => {
         var data = {
             id: 300
         };
@@ -536,15 +416,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validIntegerMaximumExclusiveExceededTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('validIntegerMaximumExclusiveExceededTest', async () => {
         var data = {
             id: 300
         };
@@ -559,15 +434,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-
-        test.done();
-    },
-    validIntegerMinimumExclusiveTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+    });
+    test('validIntegerMinimumExclusiveTest', async () => {
         var data = {
             id: 301
         };
@@ -582,15 +452,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validIntegerMaximumExclusiveTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validIntegerMaximumExclusiveTest', async () => {
         var data = {
             id: 299
         };
@@ -605,15 +470,46 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validIntegerMaximumExclusiveTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validIntegerMinimumExclusiveTest', async () => {
+        var data = {
+            id: 301
+        };
+        var model = {
+            required: [ 'id' ],
+            properties: {
+                id: {
+                    type: 'integer',
+                    description: 'The object id',
+                    format: 'int32',
+                    exclusiveMinimum: 300
+                }
+            }
+        };
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    })
+    test('validIntegerMaximumExclusiveTest', async () => {
+        var data = {
+            id: 299
+        };
+        var model = {
+            required: [ 'id' ],
+            properties: {
+                id: {
+                    type: 'integer',
+                    description: 'The object id',
+                    format: 'int32',
+                    exclusiveMaximum: 300
+                }
+            }
+        };
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    })
+    test('validIntegerMaximumExclusiveTest', async () => {
         var data = {
             id: 100
         };
@@ -629,12 +525,7 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    }
-};
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    })
+});

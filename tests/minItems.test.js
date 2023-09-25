@@ -1,15 +1,12 @@
-/**
- * Created by bdunn on 17/11/2014.
- */
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
 
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
-
-//noinspection JSUnusedGlobalSymbols
-module.exports.validatorTests = {
-    minItemsValidation: function(test) {
-        test.expect(2);
-
+describe('validationTests', () => {
+    test('minItemsValidation', async () => {
         var model = {
             "user": {
                 "title": "User",
@@ -133,15 +130,11 @@ module.exports.validatorTests = {
 
         validator = new Validator();
 
-        var result = validator.validate(data, model.user, model);
-
-        test.ok(!result.valid);
-        test.equal(result.errors[0].message, "Array requires at least 1 item(s) and has 0 item(s).", "Min Items Not Validated");
-        test.done();
-    },
-    minItemsEqualValidation: function(test) {
-        test.expect(1);
-
+        var result = await validator.validate(data, model.user, model);
+        expect(result.valid).toBe(false);
+        expect(result.errors[0].message).toEqual("Array requires at least 1 item(s) and has 0 item(s).")
+    })
+    test('minItemsEqualValidation', async () => {
         var model = {
             "user": {
                 "title": "User",
@@ -267,14 +260,11 @@ module.exports.validatorTests = {
 
         validator = new Validator();
 
-        var result = validator.validate(data, model.user, model);
+        var result = await validator.validate(data, model.user, model);
 
-        test.ok(result.valid);
-        test.done();
-    },
-    maxItemsValidation: function(test) {
-        test.expect(2);
-
+        expect(result.valid).toBe(true);
+    })
+    test('maxItemsValidation', async () => {
         var model = {
             "user": {
                 "title": "User",
@@ -402,15 +392,11 @@ module.exports.validatorTests = {
 
         validator = new Validator();
 
-        var result = validator.validate(data, model.user, model);
-
-        test.ok(!result.valid);
-        test.equal(result.errors[0].message, "Array requires no more than 2 item(s) and has 3 item(s).", "Max Items Not Validated");
-        test.done();
-    },
-    maxItemsEqualValidation: function(test) {
-        test.expect(1);
-
+        var result = await validator.validate(data, model.user, model);
+        expect(result.valid).toBe(false);
+        expect(result.errors[0].message).toEqual("Array requires no more than 2 item(s) and has 3 item(s).")
+    })
+    test('maxItemsEqualValidation', async () => {
         var model = {
             "user": {
                 "title": "User",
@@ -537,9 +523,7 @@ module.exports.validatorTests = {
 
         validator = new Validator();
 
-        var result = validator.validate(data, model.user, model);
-
-        test.ok(result.valid);
-        test.done();
-    }
-};
+        var result = await validator.validate(data, model.user, model);
+        expect(result.valid).toBe(true);
+    })
+});

@@ -1,12 +1,11 @@
-/**
- * Created by mycrobe on 1/1/2016.
- */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
-
-//noinspection JSUnusedGlobalSymbols
-module.exports.refTests = {
-    hasStringRefTest: function (test) {
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
+describe('validationTests', () => {
+    test('hasStringRefTest', async () => {
         var data = {
             biotype: 'protein_coding',
             location: {
@@ -16,7 +15,6 @@ module.exports.refTests = {
                 bottom: 5
             }
         };
-
         var models = {
             dataModel: {
                 required: ["biotype"],
@@ -54,14 +52,10 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasNumberRefTest: function (test) {
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(true);
+    });
+    test('hasNumberRefTest', async () => {
         var data = {
             biotype: 1,
             location: {
@@ -71,7 +65,6 @@ module.exports.refTests = {
                 bottom: 5
             }
         };
-
         var models = {
             dataModel: {
                 required: ["biotype"],
@@ -105,16 +98,12 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasEmptyArrayRefTest: function (test) {
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(true);
+    });
+    test('hasEmptyArrayRefTest', async () => {
         var data = {
-            biotype: [ ],
+            biotype: [],
             location: {
                 top: 1,
                 left: 1,
@@ -122,7 +111,6 @@ module.exports.refTests = {
                 bottom: 5
             }
         };
-
         var models = {
             dataModel: {
                 required: ["biotype"],
@@ -159,14 +147,10 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasObjectWithNoPropertiesRefTest: function (test) {
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(true);
+    });
+    test('hasObjectWithNoPropertiesRefTest', async () => {
         var data = {
             biotype: {
                 'protein_coding': 'miRNA'
@@ -178,7 +162,6 @@ module.exports.refTests = {
                 bottom: 5
             }
         };
-
         var models = {
             dataModel: {
                 required: ["biotype"],
@@ -212,14 +195,10 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasStringInvalidRefTest: function (test) {
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(true);
+    });
+    test('hasStringInvalidRefTest', async () => {
         var data = {
             biotype: 'FOOBAHR',
             location: {
@@ -229,7 +208,6 @@ module.exports.refTests = {
                 bottom: 5
             }
         };
-
         var models = {
             dataModel: {
                 required: ["biotype"],
@@ -267,11 +245,7 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-        test.done();
-    }
-};
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(false);
+    });
+});

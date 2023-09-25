@@ -1,12 +1,11 @@
-/**
- * Created by bdunn on 18/09/2014.
- */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
-
-//noinspection JSUnusedGlobalSymbols
-module.exports.validationTests = {
-    invalidStringTypeTest: function(test) {
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
+describe('validationTests', () => {
+    test('invalidStringTypeTest', async () => {
         var data = {
             id: 1
         };
@@ -19,16 +18,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'id (1) is not a type of string', errors.errors[0].message);
-
-        test.done();
-    },
-    invalidEmailFormatTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('id (1) is not a type of string');
+    });
+    test('invalidEmailFormatTest', async () => {
         var data = {
             id: "This is a string but not an email"
         };
@@ -42,16 +36,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'id (This is a string but not an email) is not a type of email', errors.errors[0].message);
-
-        test.done();
-    },
-    validEmailFormatTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('id (This is a string but not an email) is not a type of email');
+    });
+    test('validEmailFormatTest', async () => {
         var data = {
             id: "test@test.com"
         };
@@ -65,15 +54,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    allowArbitraryFormat: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('allowArbitraryFormat', async () => {
         var data = {
             id: 'valid string here'
         };
@@ -87,14 +71,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    stringBlankTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('stringBlankTest', async () => {
         var data = {
             id: ""
         };
@@ -107,15 +87,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    stringBlankWhenRequiredTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('stringBlankWhenRequiredTest', async () => {
         var data = {
             id: ""
         };
@@ -128,15 +103,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validStringTypeTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validStringTypeTest', async () => {
         var data = {
             sample: 'Helpful Text sample'
         };
@@ -148,15 +118,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    lengthOkTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('lengthOkTest', async () => {
         var data = {
             sample: 'TestData'
         };
@@ -169,15 +134,10 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    lengthShortTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('lengthShortTest', async () => {
         var data = {
             sample: 'Me'
         };
@@ -190,16 +150,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'sample must be at least 4 characters long and no more than 12 characters long');
-
-        test.done();
-    },
-    lengthLongTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('sample must be at least 4 characters long and no more than 12 characters long');
+    });
+    test('lengthLongTest', async () => {
         var data = {
             sample: 'ThisTestDataIsTooLong'
         };
@@ -212,16 +167,11 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === 'sample must be at least 4 characters long and no more than 12 characters long');
-
-        test.done();
-    },
-    validateTypeOfUndefinedPropertyTest: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('sample must be at least 4 characters long and no more than 12 characters long');
+    });
+    test('validateTypeOfUndefinedPropertyTest', async () => {
         var data = {
             sample: true
         };
@@ -236,45 +186,34 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    validateStringMinLengthFailsTest: function(test) {
-    var data = {
-        sample: true,
-        tag: ""
-    };
-    var model = {
-        required: [],
-        properties: {
-            sample: {
-                type: 'boolean'
-            },
-            truffle: {
-                type: 'boolean'
-            },
-            tag: {
-                type: "string",
-                minLength: 1
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('validateStringMinLengthFailsTest', async () => {
+        var data = {
+            sample: true,
+            tag: ""
+        };
+        var model = {
+            required: [],
+            properties: {
+                sample: {
+                    type: 'boolean'
+                },
+                truffle: {
+                    type: 'boolean'
+                },
+                tag: {
+                    type: "string",
+                    minLength: 1
+                }
             }
-        }
-    };
-
-    var errors = validator.validate(data, model);
-
-    test.expect(2);
-    test.ok(!errors.valid);
-    test.ok(errors.errors[0].message === 'tag cannot be blank', errors.errors[0].message);
-
-    test.done();
-}
-    ,
-    validateStringMaxLengthFailsTest: function(test) {
+        };
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe('tag cannot be blank');
+    });
+    test('validateStringMaxLengthFailsTest', async () => {
         var data = {
             sample: true,
             tag: "12"
@@ -294,13 +233,8 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-        //test.ok(false, errors.errors);
-
-        test.done();
-    }
-};
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(false);
+        //expect(false).toBe(errors.errors);
+    });
+});

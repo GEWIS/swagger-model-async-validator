@@ -23,12 +23,10 @@
     "lib"
   ],
   "scripts": {
-    "test": "nodeunit tests",
-    "test:jest": "jest"
+    "test": "jest"
   },
   "devDependencies": {
-    "all-contributors-cli": "^6.20.0",
-    "nodeunit": "^0.11.3"
+    "all-contributors-cli": "^6.20.0"
   },
   "contributors": [
     {

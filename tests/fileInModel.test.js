@@ -1,13 +1,12 @@
-/**
- * Created by bdunn on 17/08/2017.
- */
-
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
-
-module.exports.validatorTests = {
-    includeFileParameter: function (test) {
-        var model = {
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
+describe('validatorTests', () => {
+    test('includeFileParameter', async () => {
+        const model = {
             id: "TestModel",
             type: "object",
             properties: {
@@ -37,8 +36,7 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var data = {
+        const data = {
             foo: {
                 event: "test",
                 data: {
@@ -46,19 +44,14 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var swagger = {
+        const swagger = {
             definitions: {
                 TestModel: model
             }
         };
+        const testValidator = new Validator(swagger);
 
-        var testValidator = new Validator(swagger);
-
-        var result = swagger.validateModel("TestModel", data);
-
-        test.expect(1);
-        test.ok(result.valid);
-        test.done();
-    }
-};
+        const result = await swagger.validateModel("TestModel", data);
+        expect(result.valid).toBe(true);
+    });
+});

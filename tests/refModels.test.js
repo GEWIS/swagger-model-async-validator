@@ -1,12 +1,12 @@
-/**
- * Created by bdunn on 10/11/2014.
- */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
 
-//noinspection JSUnusedGlobalSymbols
-module.exports.refTests = {
-    hasRefTest: function(test) {
+describe('validationTests', () => {
+    test('hasRefTest', async () => {
         var data = {
             sample: true,
             location: {
@@ -16,7 +16,6 @@ module.exports.refTests = {
                 bottom: 5
             }
         };
-
         var models = {
             dataModel: {
                 required: [ "sample" ],
@@ -47,14 +46,10 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasRefWithDefinitionPrefixTest: function(test) {
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(true);
+    });
+    test('hasRefWithDefinitionPrefixTest', async () => {
         var data = {
             sample: true,
             location: {
@@ -64,7 +59,6 @@ module.exports.refTests = {
                 bottom: 5
             }
         };
-
         var models = {
             dataModel: {
                 required: [ "sample" ],
@@ -95,14 +89,10 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasRefWithinArray: function(test) {
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(true);
+    });
+    test('hasRefWithinArray', async () => {
         var data = {
             sample: true,
             location: [{
@@ -110,7 +100,6 @@ module.exports.refTests = {
                 bottom: 1
             }]
         };
-
         var models = {
             dataModel: {
                 required: [ "sample" ],
@@ -144,15 +133,11 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errorCount === 2, "Errors: " + errors.errors);
-        test.done();
-    },
-    hasRefWithMissingDataTest: function(test) {
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(false);
+        expect(errors.errorCount).toBe(2);
+    });
+    test('hasRefWithMissingDataTest', async () => {
         var data = {
             sample: true,
             location: {
@@ -160,7 +145,6 @@ module.exports.refTests = {
                 bottom: 1
             }
         };
-
         var models = {
             dataModel: {
                 required: [ "sample" ],
@@ -191,15 +175,11 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errorCount === 2, "Errors: " + errors.errors);
-        test.done();
-    },
-    hasRefWithFailingTypeTest: function(test) {
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(false);
+        expect(errors.errorCount).toBe(2);
+    });
+    test('hasRefWithFailingTypeTest', async () => {
         var data = {
             sample: true,
             location: {
@@ -209,7 +189,6 @@ module.exports.refTests = {
                 bottom: "Fantasy"
             }
         };
-
         var models = {
             dataModel: {
                 required: [ "sample" ],
@@ -240,14 +219,10 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-        test.done();
-    },
-    hasRefWithTooLargeANumberTest: function(test) {
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(false);
+    });
+    test('hasRefWithTooLargeANumberTest', async () => {
         var data = {
             sample: true,
             location: {
@@ -257,7 +232,6 @@ module.exports.refTests = {
                 bottom: 5
             }
         };
-
         var models = {
             dataModel: {
                 required: [ "sample" ],
@@ -289,27 +263,23 @@ module.exports.refTests = {
                 }
             }
         };
+        var errors = await validator.validate(data, models["dataModel"], models);
+        expect(errors.valid).toBe(false);
+    });
 
-        var errors = validator.validate(data, models["dataModel"], models);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-        test.done();
-    },
-    hasRefWithExcapedDefinitionPrefixTest: function(test) {
+    test('hasRefWithExcapedDefinitionPrefixTest', async () => {
         var data = {
             "amountRange":{"fromAmount":10,"toAmount":100}
         };
-
         var models = {
-                MyType: {
-                    type: "object",
-                    properties: {
-                        amountRange: {
-                            $ref: "#\/definitions\/AmountRange"
-                        }
+            MyType: {
+                type: "object",
+                properties: {
+                    amountRange: {
+                        $ref: "#/definitions/AmountRange"
                     }
-                },
+                }
+            },
             AmountRange: {
                 type: "object",
                 required: [
@@ -331,24 +301,19 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["MyType"], models);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-        test.done();
-    },
-    hasRefWithExcapedDefinitionPrefixTest2: function(test) {
+        var errors = await validator.validate(data, models["MyType"], models);
+        expect(errors.valid).toBe(false);
+    });
+    test('hasRefWithExcapedDefinitionPrefixTest2', async () => {
         var data = {
             "amountRange":{"fromAmount":10,"toAmount":100, "ccyCode": "FFG"}
         };
-
         var models = {
             "MyType": {
                 "type": "object",
                 "properties": {
                     "amountRange": {
-                        "$ref": "#\/definitions\/AmountRange"
+                        "$ref": "#/definitions/AmountRange"
                     }
                 }
             },
@@ -373,24 +338,19 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["MyType"], models);
-
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasRefWithExcapedDefinitionPrefixTest3: function(test) {
+        var errors = await validator.validate(data, models["MyType"], models);
+        expect(errors.valid).toBe(true);
+    });
+    test('hasRefWithExcapedDefinitionPrefixTest3', async () => {
         var data = {
             "amountRange":{"fromAmount":10,"toAmount":100}
         };
-
         var models = {
             "MyType": {
                 "type": "object",
                 "properties": {
                     "amountRange": {
-                        "$ref": "#\/definitions\/AmountRange"
+                        "$ref": "#/definitions/AmountRange"
                     }
                 }
             },
@@ -415,15 +375,11 @@ module.exports.refTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, models["MyType"], models);
-
-        test.expect(2);
-        test.ok(errors.errors[0].message === 'ccyCode is a required field');
-        test.ok(!errors.valid);
-        test.done();
-    },
-    hasLoopingRefTest: function(test) {
+        var errors = await validator.validate(data, models["MyType"], models);
+        expect(errors.errors[0].message).toBe('ccyCode is a required field');
+        expect(errors.valid).toBe(false);
+    });
+    test('hasLoopingRefTest', async () => {
         var data = {
             "id":"20190207111127403175",
             "href":"/ticketing/v2/tick ets/20190207111127403175",
@@ -1206,13 +1162,10 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["TicketDetailType"], models, false, true);
-
-        test.expect(1);
-        test.ok(errors.valid);
-        test.done();
-    },
-    hasLoopingRefExtraPropertyTest: function(test) {
+        var errors = await validator.validate(data, models["TicketDetailType"], models, false, true);
+        expect(errors.valid).toBe(true);
+    });
+    test('hasLoopingRefExtraPropertyTest', async () => {
         var data = {
             "id":"20190207111127403175",
             "href":"/ticketing/v2/tick ets/20190207111127403175",
@@ -1995,10 +1948,7 @@ module.exports.refTests = {
             }
         };
 
-        var errors = validator.validate(data, models["TicketDetailType"], models, false, true);
-
-        test.expect(1);
-        test.ok(!errors.valid);
-        test.done();
-    }
-};
+        var errors = await validator.validate(data, models["TicketDetailType"], models, false, true);
+        expect(errors.valid).toBe(false);
+    });
+});

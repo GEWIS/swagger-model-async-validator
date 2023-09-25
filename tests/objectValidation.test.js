@@ -1,12 +1,11 @@
-/**
- * Created by bdunn on 18/09/2014.
- */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
-
-//noinspection JSUnusedGlobalSymbols
-module.exports.validationTests = {
-    stringObjectype: function(test) {
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
+describe('validationTests', () => {
+    test('stringObjectype', async () => {
         var data = {
             "id": "1",
             "testObject": ""
@@ -30,23 +29,17 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.equals(errors.errors[0].message, "testObject is not a type of object. It is a type of string")
-
-        test.done();
-    },
-    typeFieldWrongType: function(test) {
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+        expect(errors.errors[0].message).toBe("testObject is not a type of object. It is a type of string");
+    });
+    test('typeFieldWrongType', async () => {
         var data = {
             "id": "1",
             "testObject": {
                 "testObjectProperty": "testObjectString"
             }
         };
-
         var model = {
             "type": "object",
             "properties": {
@@ -69,13 +62,8 @@ module.exports.validationTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.equals(errors.errors[0].message, "Schema property (testObject) has a non string 'type' field")
-
-        test.done()
-    }
-};
+        var errors = await validator.validate(data, model);
+        expect(errors.valid).toBeFalsy();
+        expect(errors.errors[0].message).toBe("Schema property (testObject) has a non string 'type' field");
+    });
+});

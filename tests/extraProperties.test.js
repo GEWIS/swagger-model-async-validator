@@ -1,18 +1,17 @@
-/**
- * Created by bdunn on 19/03/2015.
- */
-var Validator = require('../lib/modelValidator');
-var validator = new Validator();
-
-//noinspection JSUnusedGlobalSymbols
-module.exports.validatorTests = {
-    allowExtraProperties: function (test) {
-        var data = {
+const Validator = require('../lib/modelValidator');
+const { beforeEach, describe, test, expect } = require('@jest/globals');
+let validator;
+beforeEach(() => {
+    validator = new Validator();
+});
+describe('validatorTests', () => {
+    test('allowExtraProperties', async () => {
+        const data = {
             id: 1,
             count: 4
         };
-        var model = {
-            required: [ 'id' ],
+        const model = {
+            required: ['id'],
             properties: {
                 id: {
                     type: 'number',
@@ -20,21 +19,16 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    disallowExtraProperties: function (test) {
-        var data = {
+        const errors = await validator.validate(data, model);
+        expect(errors.valid).toBe(true);
+    });
+    test('disallowExtraProperties', async () => {
+        const data = {
             id: 1,
             count: 4
         };
-        var model = {
-            required: [ 'id' ],
+        const model = {
+            required: ['id'],
             properties: {
                 id: {
                     type: 'number',
@@ -42,22 +36,17 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model, null, false, true);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === "Target property 'count' is not in the model", errors.errors[0].message);
-
-        test.done();
-    },
-    disallowExtraPropertiesWithN0oExtraProperties: function (test) {
-        var data = {
+        const errors = await validator.validate(data, model, null, false, true);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe("Target property 'count' is not in the model");
+    });
+    test('disallowExtraPropertiesWithN0oExtraProperties', async () => {
+        const data = {
             id: 1,
             count: 4
         };
-        var model = {
-            required: [ 'id' ],
+        const model = {
+            required: ['id'],
             properties: {
                 id: {
                     type: 'number',
@@ -69,16 +58,11 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(data, model, null, false, true);
-
-        test.expect(1);
-        test.ok(errors.valid);
-
-        test.done();
-    },
-    disallowNestedExtraProperties: function (test) {
-        var person = {
+        const errors = await validator.validate(data, model, null, false, true);
+        expect(errors.valid).toBe(true);
+    });
+    test('disallowNestedExtraProperties', async () => {
+        const person = {
             id: 1,
             names: {
                 firstName: "Bob",
@@ -86,7 +70,7 @@ module.exports.validatorTests = {
                 middleName: "Shouldn't be here"
             }
         };
-        var model = {
+        const model = {
             required: ['id'],
             properties: {
                 id: {
@@ -108,17 +92,12 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var errors = validator.validate(person, model, null, false, true);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === "Target property 'middleName' is not in the model", errors.errors[0].message);
-
-        test.done();
-    },
-    disallowReferencedExtraProperties: function (test) {
-        var person = {
+        const errors = await validator.validate(person, model, null, false, true);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe("Target property 'middleName' is not in the model");
+    });
+    test('disallowReferencedExtraProperties', async () => {
+        const person = {
             id: 1,
             names: {
                 firstName: "Bob",
@@ -126,8 +105,7 @@ module.exports.validatorTests = {
                 middleName: "Shouldn't be here"
             }
         };
-
-        var namesModel = {
+        const namesModel = {
             type: 'object',
             properties: {
                 firstName: {
@@ -140,8 +118,7 @@ module.exports.validatorTests = {
                 }
             }
         };
-
-        var personModel = {
+        const personModel = {
             required: ['id'],
             properties: {
                 id: {
@@ -149,24 +126,18 @@ module.exports.validatorTests = {
                     description: 'The object id'
                 },
                 names: {
-                  "$ref": "#/definitions/names"
+                    "$ref": "#/definitions/names"
                 }
             }
         };
-
-        var models = {
-          definitions: {
-              names: namesModel,
-              person: personModel
-          }
+        const models = {
+            definitions: {
+                names: namesModel,
+                person: personModel
+            }
         };
-
-        var errors = validator.validate(person, models.definitions.person, models.definitions, false, true);
-
-        test.expect(2);
-        test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === "Target property 'middleName' is not in the model", errors.errors[0].message);
-
-        test.done();
-    }
-};
+        const errors = await validator.validate(person, models.definitions.person, models.definitions, false, true);
+        expect(errors.valid).toBe(false);
+        expect(errors.errors[0].message).toBe("Target property 'middleName' is not in the model");
+    });
+});

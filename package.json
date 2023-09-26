@@ -1,21 +1,21 @@
 {
-  "name": "swagger-model-validator",
-  "version": "3.0.21",
-  "description": "Validate incoming objects against Swagger Models.",
+  "name": "swagger-model-validator-async",
+  "version": "4.0.0",
+  "description": "Validate incoming objects against Swagger Models (Forked for async features.).",
   "keywords": [
     "Swagger",
     "Validation",
     "OpenApi"
   ],
   "license": "MIT",
-  "author": "Brody Dunn",
+  "author": "GEWIS",
   "bugs": {
-    "url": "https://github.com/swagger-model-validator/swagger-model-validator/issues"
+    "url": "https://github.com/GEWIS/swagger-model-validator/issues"
   },
   "homepage": "https://github.com/swagger-model-validator/swagger-model-validator",
   "repository": {
     "type": "git",
-    "url": "https://github.com/swagger-model-validator/swagger-model-validator.git"
+    "url": "https://github.com/GEWIS/swagger-model-validator.git"
   },
   "files": [
     "index.js",

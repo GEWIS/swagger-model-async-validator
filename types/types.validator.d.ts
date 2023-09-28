@@ -20,6 +20,8 @@ declare module 'swagger-model-validator' {
         ): Promise<ValidationResult>;
     }
 
+    type ValidatorReturn = Error | Error[] | null;
+
     export default class Validator {
         constructor(swaggerSpec: object);
 
@@ -34,7 +36,7 @@ declare module 'swagger-model-validator' {
         addFieldValidator<T>(
             modelName: string,
             fieldName: string,
-            validator: (name: string, value: T) => Promise<Error | Error[] | null>,
+            validator: (name: string, value: T) => Promise<ValidatorReturn> | ValidatorReturn,
         ): null;
     }
 }

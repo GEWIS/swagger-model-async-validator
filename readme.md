@@ -1,19 +1,14 @@
 # Validate incoming objects against OpenAPI Models for Node.js (Fork)
 
+[![npm version](https://badge.fury.io/js/swagger-model-async-validator.svg)](https://badge.fury.io/js/swagger-model-validator)
+[![NPM](https://nodei.co/npm/swagger-model-async-validator.png?downloads=true)](https://nodei.co/npm-dl/swagger-model-async-validator/)
+
 This is a fork of the validation module for [Swagger](https://github.com/swagger-api/swagger-spec) models (version 1.2 and 2.0) and for [Open API](https://swagger.io/specification/) models (version 3.0) for Node.js.
 
 **Note**: This fork includes additional features, such as async custom field validators.
 
 ## Original Repository
 This fork is based on the [swagger-model-validator](https://github.com/swagger-model-validator/swagger-model-validator) package, which has been abandoned since 2021.
-
-
-[ ![npm version](https://badge.fury.io/js/swagger-model-validator.svg)](https://badge.fury.io/js/swagger-model-validator)
-[![Build Status](https://travis-ci.com/swagger-model-validator/swagger-model-validator.svg?branch=master)](https://travis-ci.org/swagger-model-validator/swagger-model-validator)
-[![Known Vulnerabilities](https://snyk.io/test/npm/swagger-model-validator/3.0.15/badge.svg)](https://snyk.io/test/npm/swagger-model-validator/3.0.21)
-[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](https://github.com/swagger-model-validator/swagger-model-validator/blob/master/contributors.md)
-
-[![NPM](https://nodei.co/npm/swagger-model-validator.png?downloads=true)](https://nodei.co/npm-dl/swagger-model-validator/)
 
 This is a validation module for [Swagger](https://github.com/swagger-api/swagger-spec) models (version 1.2 and 2.0) and for [Open API](https://swagger.io/specification/) models (version 3.0) for Node.js and has been developed using WebStorm.
 

@@ -1,7 +1,6 @@
 # Validate incoming objects against OpenAPI Models for Node.js (Fork)
 
 [![npm version](https://badge.fury.io/js/swagger-model-async-validator.svg)](https://badge.fury.io/js/swagger-model-validator)
-[![NPM](https://nodei.co/npm/swagger-model-async-validator.png?downloads=true)](https://nodei.co/npm-dl/swagger-model-async-validator/)
 
 This is a fork of the validation module for [Swagger](https://github.com/swagger-api/swagger-spec) models (version 1.2 and 2.0) and for [Open API](https://swagger.io/specification/) models (version 3.0) for Node.js.
 

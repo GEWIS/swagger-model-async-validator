@@ -16,7 +16,7 @@ We will increment the Major and Minor versions to match the maximum version of t
 
 See the [swagger-node-express](https://github.com/swagger-api/swagger-node-express) sample for more details about Swagger in Node.js.
 
-This is tested against and the latest stable versions of NodeJS 4, 5, 6, 7, 8, 9, 10, 11, 12 and 13 using [Travis](https://travis-ci.org/swagger-model-validator/swagger-model-validator).
+This is tested against and the latest stable versions of NodeJS 18 and 20 using GitHub Actions.
 
 ## What's Open API?
 The goal of OpenAPI™ (formerly Swagger) is to define a standard, language-agnostic interface to REST APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection. When properly defined via OpenAPI, a consumer can understand and interact with the remote service with a minimal amount of implementation logic. Similar to what interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.

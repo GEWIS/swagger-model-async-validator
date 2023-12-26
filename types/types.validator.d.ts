@@ -4,39 +4,61 @@ declare module 'swagger-model-validator' {
         errorCount: number;
         errors?: {
             name: string;
-            message: string
-        }[],
-        GetErrorMessages: () => string[],
-        GetFormattedErrors: () => object[]
+            message: string;
+        }[];
+        GetErrorMessages: () => string[];
+        GetFormattedErrors: () => object[];
     }
 
     export interface SwaggerSpecification {
-        definitions: any;
+        components?: {
+            schemas: any;
+        };
         validateModel(
-            modelName: string,
-            object: object,
-            allowBlankTarget?: boolean,
-            disallowExtraProperties?: boolean
+          modelName: string,
+          object: object,
+          allowBlankTarget?: boolean,
+          disallowExtraProperties?: boolean
         ): Promise<ValidationResult>;
+        addFieldValidatorToModel(model: string, fieldName: string, validatorFunction: Function): void;
+        addFieldValidator(modelName: string, fieldName: string, validatorFunction: Function): void;
     }
 
-    type ValidatorReturn = Error | Error[] | null;
+    export interface CustomValidator {
+        addFieldValidatorToModel(model: string, fieldName: string, validatorFunction: Function): void;
+        addFieldValidator(modelName: string, fieldName: string, validatorFunction: Function): void;
+        getFieldValidators(modelName: string, fieldName: string): Function[];
+        validate(name: string, model: object, key: string, value: any): Promise<Error[] | null>;
+    }
+
+    export interface Merger {
+        mergeModels(target: object, swaggerModel: object, swaggerModels: object): object;
+        dereferenceModel(target: object, model: object, models: object, depth: number): object;
+    }
+
+    export interface ValueValidator {
+        validateValue(key: string, value: any, field: object): Promise<Error[] | null>;
+    }
 
     export default class Validator {
-        constructor(swaggerSpec: object);
+        customValidators: CustomValidator;
+        merger: Merger;
+        valueValidator: ValueValidator;
+        swagger: SwaggerSpecification;
+
+        constructor(swaggerSpec: SwaggerSpecification);
 
         validate(
-            object: object,
-            swaggerModel: string,
-            swaggerModels: object,
-            allowBlankTarget?: boolean,
-            disallowExtraProperties?: boolean
+          object: object,
+          swaggerModel: string,
+          swaggerModels: object,
+          allowBlankTarget?: boolean,
+          disallowExtraProperties?: boolean
         ): Promise<ValidationResult>;
 
-        addFieldValidator<T>(
-            modelName: string,
-            fieldName: string,
-            validator: (name: string, value: T) => Promise<ValidatorReturn> | ValidatorReturn,
-        ): null;
+        addFieldValidatorToModel(model: string, fieldName: string, validatorFunction: Function): void;
+        addFieldValidator(modelName: string, fieldName: string, validatorFunction: Function): void;
+        getFieldValidators(modelName: string, fieldName: string): Function[];
+        getCustomValidator(): CustomValidator;
     }
 }
